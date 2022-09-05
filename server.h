@@ -38,6 +38,7 @@ public:
     // ticks
     unsigned long long ticksElapsed = 0;
     float elapsedTime = -1;
+    float periodTime  = -1;
     float ups         = -1;
 
     /**

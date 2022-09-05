@@ -10,7 +10,7 @@ ServerBase::ServerBase() {
     this->scheduler = new ServerScheduler();
 
     // set default ups
-    this->set_target_ups(60.0f);
+    this->set_target_ups(-1.0f);
 }
 
 ServerBase* ServerBase::set_target_ups(float ups) {
@@ -41,13 +41,7 @@ ServerBase* ServerBase::set_active(bool b) {
  * Will set up the server.
  */
 void ServerBase::setup() {
-    this->scheduler->create_sync_real_timer("hehehehe")
-            ->on_complete([&] {
-                std::cout << "Task Complete." << std::endl;
-            })
 
-            ->set_time_left(5.0f)
-            ->set_active(true);
 }
 
 // WRAPPER: static wrapper for ServerBase::run()
@@ -67,6 +61,7 @@ void ServerBase::run() {
     auto tp1 = Clock::now();
     auto tp2 = Clock::now();
     float fElapsedTime;
+    float fPeriodTime;
 
     // main loop
     while (this->_active) {
@@ -82,6 +77,9 @@ void ServerBase::run() {
         fElapsedTime = dElapsed.count();
         this->elapsedTime = fElapsedTime;
         tp1 = Clock::now();
+
+        fPeriodTime = m_max(elapsedTime, _target_tc);
+        periodTime  = fPeriodTime;
 
         if (syncUps) {
             // wait for next tick
@@ -101,23 +99,28 @@ void ServerBase::run() {
         /* ----------------- */
 
         // update scheduler
-        scheduler->update_tick(elapsedTime, m_max(elapsedTime, _target_tc));
+        scheduler->update_tick(fElapsedTime, fPeriodTime);
 
         /* ----------------- */
         /* Tick Tail         */
         /* ----------------- */
 
-        double a = 1000000000000;
-        for (int i = 0; i < 10; i++)
-            a /= 5;
-        if (ticksElapsed % 60 == 0)
-            std::cout << a << std::endl;
+ #ifdef TEST_DECREASE_PERFORMANCE
+        {
+            double a = 1000000000000;
+            for (int i = 0; i < TEST_DECREASE_PERFORMANCE; i++)
+                a /= 5;
+            if (ticksElapsed % 10000 == 0) {
+                std::cout << a << std::endl;
+            }
+        }
+#endif
 
         /* ----------------- */
         /* Debug             */
         /* ----------------- */
 
-        if (ticksElapsed % 60 == 0)
+        if (ticksElapsed % 1000000 == 0)
             std::cout << "Tick | elapsed: " << fElapsedTime << ", ups: " << ups << std::endl;
 
         /* ----------------- */
