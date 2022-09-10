@@ -41,11 +41,16 @@ public:
     float periodTime  = -1;
     float ups         = -1;
 
+    int debug_updates_per_log = 240;
+
     /**
      * Constructor.
      * Sets up the core.
      */
     ServerBase();
+
+    // debug
+    void print_tick_debug();
 
     // basic getters and setters
     ServerBase* set_target_ups(float ups);

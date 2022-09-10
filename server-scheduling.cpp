@@ -76,6 +76,14 @@ Timer* ServerScheduler::create_sync_real_timer(std::string name) {
     return timer;
 }
 
+std::vector<Timer*>& ServerScheduler::get_sync_tick_timers() {
+    return _sync_tick_timers;
+}
+
+std::vector<Timer*>& ServerScheduler::get_sync_real_timers() {
+    return _sync_rt_timers;
+}
+
 ServerScheduler* ServerScheduler::run_soon(std::function<void()> func) {
     _run_this_tick->push_back(func);
     return this;

@@ -78,6 +78,8 @@ public:
     // timers
     Timer* create_sync_tick_timer(std::string name);
     Timer* create_sync_real_timer(std::string name);
+    std::vector<Timer*>& get_sync_tick_timers();
+    std::vector<Timer*>& get_sync_real_timers();
 
     // run next or this tick
     ServerScheduler* run_soon(std::function<void()> func);
